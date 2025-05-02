@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To Do Registration</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: lightcyan;
+      }
+      .reg-section {
+        width: 40%;
+      }
+      form {
+        width: 80%;
+        padding: 1rem;
+        background-color: lightcoral;
+        margin: auto;
+        border-radius: 0.6rem;
+      }
+      input,
+      button {
+        padding: 0.6rem;
+        border-radius: 0.3rem;
+      }
+      input,
+      label,
+      p {
+        width: 90%;
+        display: block;
+        margin: 0.2rem auto;
+      }
+      p {
+        margin-top: 1rem;
+        margin: 1rem auto 0;
+      }
+      a {
+        text-decoration: none;
+        color: orangered;
+        padding: 0.5rem;
+      }
+      a:hover {
+        background-color: rgb(171, 205, 236);
+      }
+      input {
+        width: 90%;
+        border: 2px solid lightgray;
+      }
+      button {
+        display: block;
+        margin: 0.5rem auto;
+        border: none;
+        padding: 0.6rem 1rem;
+      }
+      button:hover {
+        background-color: rgb(13, 117, 36);
+      }
+      h2,
+      p {
+        text-align: center;
+      }
+      #pass-status {
+        color: red;
+      }
+      @media screen and (max-width: 900px) {
+        .reg-section {
+          width: 60%;
+        }
+      }
+      @media screen and (max-width: 700px) {
+        .reg-section {
+          width: 80%;
+        }
+      }
+      @media screen and (max-width: 500px) {
+        .reg-section {
+          width: 90%;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        .reg-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="reg-section">
+      <form action="" id="form">
+        <h2>Register form</h2>
+        <label for="email"><strong>Email</strong></label>
+        <input
+          type="text"
+          placeholder="Enter Your Email"
+          required
+          autocomplete="on"
+          id="email"
+        />
+        <label for="password"><strong>password</strong></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          required
+          autocomplete="on"
+          id="password"
+        />
+        <p id="pass-status"></p>
+        <label for="con-password"><strong>Confirm Password</strong></label>
+        <input
+          type="password"
+          placeholder="Confirm The Password"
+          required
+          autocomplete="on"
+          id="con-password"
+        />
+        <button type="submit">Register</button>
+        <p>
+          if you have an Account,<a href="todo-login.html"
+            ><strong>Login</strong></a
+          >
+        </p>
+      </form>
+    </section>
+    <script>
+      let pass = document.getElementById("pass-status");
+      let userDetails = JSON.parse(localStorage.getItem("users")) || [];
+
+      function register(e) {
+        e.preventDefault();
+        let email = document.getElementById("email").value.trim().toLowerCase();
+        let password = document.getElementById("password").value.trim();
+        let conPassword = document.getElementById("con-password").value.trim();
+        if (userDetails.length > 0) {
+          let userExist = userDetails.some((ele) => ele.email == email);
+          if (userExist) {
+            alert("User Already Existed");
+            return;
+          }
+        }
+        if (password !== conPassword) {
+          pass.innerHTML = "Password are not Matched";
+          return;
+        }
+        if (password.length < 8) {
+          pass.innerHTML = "password should be 8 characters";
+          return;
+        }
+        if (email && password && conPassword) {
+          let obj = { email: email, password: password };
+          userDetails.push(obj);
+          let setData = localStorage.setItem(
+            "users",
+            JSON.stringify(userDetails)
+          );
+          alert("successfully Registered");
+          location.href = "./todo-login.html";
+        }
+      }
+      document.getElementById("form").addEventListener("submit", register);
+    </script>
+  </body>
+</html>

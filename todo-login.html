@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To DO Task Login Form</title>
+    <style>
+       * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      background:lightblue;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      width: 90%;
+      max-width: 400px;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #00796b;
+    }
+
+    label {
+      display: block;
+      margin: 0.8rem 0 0.3rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #00796b;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 1.5rem;
+      border: none;
+      background-color: #00796b;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: red;
+      height: 1rem;
+      margin-top: 0.2rem;
+    }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <h2>Login Form</h2>
+      <label for="Name">Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Enter Your Name"
+        required
+        autocomplete="on"
+      />
+      <p id="name-status"></p>
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Enter Your Email"
+      />
+      <label for="">Password</label>
+      <input
+        type="password"
+        required
+        minlength="6"
+        maxlength="10"
+        id="password"
+      />
+      <p id="email-status"></p>
+      <button type="submit">LogIn</button>
+    </form>
+    <script>
+      let array = "";
+      function Login(e) {
+        e.preventDefault();
+        let localData = JSON.parse(localStorage.getItem("users")) || [];
+        console.log(localData);
+        let name = document.getElementById("name").value.trim();
+        let email = document.getElementById("email").value.trim().toLowerCase();
+        let password = document.getElementById("password").value.trim();
+        if (name && email && password) {
+          let matched = localData.find(
+            (ele) => ele.email == email && ele.password == password
+          );
+
+          if (matched) {
+            array = name;
+            localStorage.setItem("logger-details", JSON.stringify(array));
+            alert("Successfully Logged In");
+            location.href = "./todo-task.html";
+          } else {
+            alert("Sorry!Please Enter valid credentials");
+          }
+        } else {
+          alert("Please enter Valid Details ");
+        }
+      }
+      let form = document.getElementById("form");
+      form.addEventListener("submit", Login);
+    </script>
+  </body>
+</html>

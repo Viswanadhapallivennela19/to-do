@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To Do List</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #e0f7fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+      }
+
+      header {
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1::first-letter {
+        font-size: 2.6rem;
+        color: orange;
+      }
+
+      #brand {
+        font-size: 1.5rem;
+        color: #00796b;
+      }
+
+      #logOut {
+        padding: 0.5rem 1rem;
+        border: none;
+        background-color: #f44336;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #logOut:hover {
+        background-color: #d32f2f;
+      }
+
+      .todo-list {
+        max-width: 600px;
+        margin: 6rem auto 2rem;
+        padding: 2rem;
+        background-color: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      form h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #00695c;
+      }
+
+      input#task {
+        width: 75%;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 2px solid #00796b;
+        border-radius: 5px;
+      }
+
+      form button {
+        padding: 0.5rem 1rem;
+        margin-left: 1rem;
+        background-color: #00796b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #004d40;
+      }
+
+      #task-status {
+        border-radius: 0.6rem;
+        width: 90%;
+        margin: auto;
+        box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.158);
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      #task-status > div {
+        display: flex;
+        width: 33%;
+        justify-content: center;
+        align-items: center;
+        background-color: lightgrey;
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+      }
+
+      #task-status p {
+        flex: 1;
+        font-size: 1rem;
+      }
+
+      #task-status button {
+        margin-left: 0.5rem;
+        padding: 0.3rem 0.6rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      #task-status button:nth-child(2) {
+        background-color: #2196f3;
+        color: white;
+      }
+
+      #task-status button:nth-child(2):hover {
+        background-color: #1976d2;
+      }
+
+      #task-status button:nth-child(3) {
+        background-color: #e53935;
+        color: white;
+      }
+
+      #task-status button:nth-child(3):hover {
+        background-color: #c62828;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1 id="brand">Welcome! User</h1>
+      <button id="logOut" onclick="logout()">LogOut</button>
+    </header>
+    <div class="todo-list">
+      <form action id="form">
+        <h2>Welcome! To do List</h2>
+        <input
+          type="text"
+          placeholder="Please Enter a Task"
+          required
+          id="task"
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+    <div id="task-status"></div>
+    <script>
+      let display_task = document.getElementById("task-status");
+      let localUserData =
+        JSON.parse(localStorage.getItem("userPostedData")) || [];
+      let logger = JSON.parse(localStorage.getItem("logger-details"));
+      let name = logger;
+      document.getElementById("brand").innerHTML = logger;
+      if (localUserData.length > 0) {
+        localUserData.forEach((user) => {
+          if (user.name === name) {
+            user.tasks.forEach((task) => addTaskToDOM(task, user));
+          }
+        });
+      }
+      function addTaskToDOM(task, user) {
+        let div = document.createElement("div");
+        let p = document.createElement("p");
+        let editBtn = document.createElement("button");
+        let delBtn = document.createElement("button");
+        p.innerHTML = task;
+        editBtn.innerText = "Edit";
+        delBtn.innerText = "Delete";
+        div.append(p, editBtn, delBtn);
+        display_task.appendChild(div);
+        editBtn.onclick = () => {
+          let newTask = prompt("Please edit the task", p.innerHTML);
+          if (newTask && newTask.trim()) {
+            let index = user.tasks.indexOf(p.innerHTML);
+            if (index !== -1) {
+              user.tasks[index] = newTask.trim();
+              localStorage.setItem(
+                "userPostedData",
+                JSON.stringify(localUserData)
+              );
+              p.innerHTML = newTask.trim();
+            }
+          }
+        };
+        delBtn.onclick = () => {
+          let index = user.tasks.indexOf(p.innerHTML);
+          if (index !== -1) {
+            user.tasks.splice(index, 1);
+            localStorage.setItem(
+              "userPostedData",
+              JSON.stringify(localUserData)
+            );
+            div.remove();
+          }
+        };
+      }
+      function TodoTask(e) {
+        e.preventDefault();
+        let task = document.getElementById("task").value.trim();
+        if (!task) {
+          alert("Please enter a valid task");
+          return;
+        }
+        let user = localUserData.find((u) => u.name === name);
+        if (user) {
+          user.tasks.push(task);
+        } else {
+          user = {
+            name: name,
+            tasks: [task],
+          };
+          localUserData.push(user);
+        }
+        localStorage.setItem("userPostedData", JSON.stringify(localUserData));
+        addTaskToDOM(task, user);
+        document.getElementById("form").reset();
+      }
+      function logout() {
+        location.href = "./todo-login.html";
+      }
+      document.getElementById("form").addEventListener("submit", TodoTask);
+    </script>
+  </body>
+</html>
